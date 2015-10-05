@@ -19,6 +19,8 @@ function aimg = alignSingle(img,B)
             end
         end
     end
+    
+    disp(minVector);
 	
 	% TODO2: Matching in single-scale
     for y = 1 : size(img, 1)

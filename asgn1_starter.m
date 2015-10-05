@@ -1,7 +1,7 @@
 %% CSCI 3290: Assignment 1 Starter Code
 
 % Input glass plate image
-imgname = '00978v.jpg';
+imgname = '01087v.jpg';
 fullimg = imread(imgname);
 
 % Convert to double matrix
@@ -27,10 +27,12 @@ tic;   % The Timer starts. To Evalute algorithms' efficiency.
 % Write your codes here. 
 % Write your function of alignSingle and alignMulti
 
-aG = alignSingle(G,B);
-aR = alignSingle(R,B);
+% aG = alignSingle(G,B);
+% aR = alignSingle(R,B);
 % aG = alignMulti(G,B);
 % aR = alignMulti(R,B);
+aG = alignSURF(G, B);
+aR = alignSURF(R, B);
 
 toc;   % The Timer stops and displays time elapsed.
 
