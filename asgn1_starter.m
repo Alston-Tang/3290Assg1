@@ -1,7 +1,7 @@
 %% CSCI 3290: Assignment 1 Starter Code
 
 % Input glass plate image
-imgname = '01087v.jpg';
+imgname = '01087u.tif';
 fullimg = imread(imgname);
 
 % Convert to double matrix
