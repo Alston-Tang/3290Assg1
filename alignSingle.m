@@ -1,8 +1,11 @@
 function aimg = alignSingle(img,B)
 % This function is to align img to B using single-scale algorithms
 % Output is the aligned version of img
+    
     aimg = zeros(size(img));
 	[h,w] = size(B);
+    [hImg, wImg] = size(img);
+    %{
 	% TODO: Write your codes for single-scale implementation
 	% Initialize variables
 	minMetric = inf; % minimum metric value
@@ -19,14 +22,14 @@ function aimg = alignSingle(img,B)
             end
         end
     end
-    
-    disp(minVector);
+    %}
+    dv = weighDifference(B, img, -30, 30, 30, -30);  
 	
 	% TODO2: Matching in single-scale
     for y = 1 : size(img, 1)
         for x = 1 : size(img, 2)
-            adjY = y - minVector(1);
-            adjX = x - minVector(2);
+            adjY = y - dv(1);
+            adjX = x - dv(2);
             if adjY > 0 && adjY <size(img, 1) && adjX > 0 && adjX < size(img, 2)
                 aimg(adjY, adjX) = img(y, x);
             end
