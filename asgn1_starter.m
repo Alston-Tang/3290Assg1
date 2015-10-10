@@ -3,11 +3,13 @@
 %% CSCI 3290: Assignment 1 Starter Code
 
 % Input glass plate image
-imgname = '00290v.jpg';
+imgname = '00978v.jpg';
 try
     fullimg = imread(imgname);
 catch
-    websave(imgname, strcat('http://lcweb2.loc.gov/service/pnp/prok/00200/', imgname));
+    imgSeries = strcat(imgname(1:3), '00');
+    url = strcat('http://lcweb2.loc.gov/service/pnp/prok/', imgSeries, '/', imgname);
+    websave(imgname, url);
     disp('Image Downloaded');
     fullimg = imread(imgname);
 end
@@ -39,9 +41,9 @@ tic;   % The Timer starts. To Evalute algorithms' efficiency.
 
 % aG = alignMulti(G,B);
 % aR = alignMulti(R,B);
-% [aR, aG] = alignSURF(B, G, R);
-aG = alignSingle(G,B);
-aR = alignSingle(R,B);
+[aR, aG] = alignSURF(B, G, R);
+% aG = alignSingle(G,B);
+% aR = alignSingle(R,B);
 
 toc;   % The Timer stops and displays time elapsed.
 %% Output Results
@@ -49,8 +51,11 @@ toc;   % The Timer stops and displays time elapsed.
 % For your own code, "G","R" shoule be replaced to "aG","aR"
 colorImg = cat(3,aR,aG,B);
 
+[edgeb, edget, edgel, edger] = cropEdge(colorImg, 0.8);
+cropColorImg = colorImg(edget:edgeb, edgel:edger, :);
+
 % Show the resulting image: "imshow" command
-imshow(colorImg);
+imshow(cropColorImg);
 
 % Save result image to File
 % imwrite(colorImg,['result-' imgname]);

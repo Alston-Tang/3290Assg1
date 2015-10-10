@@ -4,24 +4,19 @@ function aimg = alignMulti(img,B)
 	[h,w] = size(B);
 	% TODO: Write your codes for multi-scale implementation
 	% TODO: Build Image Pyramid for img & B
-	pyramid_scale = 2;
-	pyramid_levels = ; % choose your value
-	gaussianf = fspecial('gaussian', [5,5], 1.5); % change if you need
-	
-	imgs = cell(pyramid_levels,1);
-	imgs{1} = img;
-	Bs = cell(pyramid_levels,1);
-	Bs{1} = B;
-	
-	for ilevel = 2:1:pyramid_levels
-		% write your code
-		
-	end
+    [BP, sizeBP] = createPyramid(B);
+    [imgP, sizeImgP] = createPyramid(img);
+    
+    subDv = weighDifference(BP{sizeBP}, imgP{sizeImgP}, -20, 20, 20, -20);
+    for indexP = sizeBP-1:-1:1
+        subDv = subDv * 2;
+        subDv = weighDifference(BP{indexP}, imgP{indexP}, subDv(2)-3, subDv(2)+3, subDv(1)+3, subDv(1)-3);
+    end
+    dv = subDv;
+    
 	
 	% TODO3: Match using Image Pyramids
-	for ilevel = pyramid_levels:-1:1
-		
-	end
+	aimg = circshift(img, -dv);
 	
 	% Output aimg
 	

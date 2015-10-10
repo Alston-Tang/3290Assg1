@@ -4,12 +4,20 @@ function dv = weighDifference(B, img, l, r, t, b)
     % cropImg = zeros(size(img));
     errorMin = realmax;
     [h, w] = size(img);
-    cropBase = zeros(3*h-2, 3*w-2);
-    cropBase(h:2*h-1,w:2*w-1) = img(:,:);
     for dvy = b : t
         for dvx = l : r
-            cropImg = cropBase(h+dvy:2*h+dvy-1,w+dvx:2*w+dvx-1);
-            error = sum(sum((B-cropImg).^2));
+            Bb = -dvy + 1;
+            Bl = dvx + 1;
+            Bt = h - dvy;
+            Br = w + dvx;
+            if Bb < 1 Bb = 1; end
+            if Bl < 1 Bl = 1; end
+            if Bt > h Bt = h; end
+            if Br > w Br = w; end
+            
+            % adjImg = circshift(img, [dvy, dvx]);
+            errorMatrix = abs(B(Bb:Bt,Bl:Br)-img(h-Bt+1:h-Bb+1,w-Br+1:w-Bl+1));
+            error = sum(sum(errorMatrix))/(Bt-Bb+1)/(Br-Bl+1);
             if error < errorMin
                 errorMin = error;
                 dv = [dvy, dvx];

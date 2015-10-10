@@ -23,18 +23,10 @@ function aimg = alignSingle(img,B)
         end
     end
     %}
-    dv = weighDifference(B, img, -30, 30, 30, -30);  
+    dv = weighDifference(B, img, -10, 10, 10, -10);  
 	
 	% TODO2: Matching in single-scale
-    for y = 1 : size(img, 1)
-        for x = 1 : size(img, 2)
-            adjY = y - dv(1);
-            adjX = x - dv(2);
-            if adjY > 0 && adjY <size(img, 1) && adjX > 0 && adjX < size(img, 2)
-                aimg(adjY, adjX) = img(y, x);
-            end
-        end
-    end
+    aimg = circshift(img, -dv);
 	% Output aimg
 	
 end
