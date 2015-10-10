@@ -3,12 +3,18 @@
 %% CSCI 3290: Assignment 1 Starter Code
 
 % Input glass plate image
-imgname = '00978v.jpg';
+imgname = '00978u.tif';
 try
     fullimg = imread(imgname);
 catch
     imgSeries = strcat(imgname(1:3), '00');
-    url = strcat('http://lcweb2.loc.gov/service/pnp/prok/', imgSeries, '/', imgname);
+    imgExt = imgname(size(imgname, 2)-2:size(imgname, 2));
+    if strcmp('jpg', imgExt) == 1
+        imgDir = 'service';
+    else
+        imgDir = 'master';
+    end
+    url = strcat('http://lcweb2.loc.gov/',imgDir,'/pnp/prok/', imgSeries, '/', imgname);
     websave(imgname, url);
     disp('Image Downloaded');
     fullimg = imread(imgname);
@@ -50,10 +56,10 @@ toc;   % The Timer stops and displays time elapsed.
 % Create a color image (3D array): "cat" command
 % For your own code, "G","R" shoule be replaced to "aG","aR"
 colorImg = cat(3,aR,aG,B);
-
+tic;
 [edgeb, edget, edgel, edger] = cropEdge(colorImg, 0.8);
 cropColorImg = colorImg(edget:edgeb, edgel:edger, :);
-
+toc;
 % Show the resulting image: "imshow" command
 imshow(cropColorImg);
 
