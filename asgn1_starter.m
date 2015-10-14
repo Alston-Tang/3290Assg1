@@ -3,7 +3,7 @@
 %% CSCI 3290: Assignment 1 Starter Code
 
 % Input glass plate image
-imgname = '00120u.tif';
+imgname = '00978v.jpg';
 try
     fullimg = imread(imgname);
 catch
@@ -69,7 +69,6 @@ edger = min([redger, bedger, gedger]);
 toc;
 
 colorImg = cat(3,aR,aG,B);
-
 cropColorImg = colorImg(edget:edgeb, edgel:edger, :);
 tic;
 contrastImg = autoContrast(cropColorImg);
