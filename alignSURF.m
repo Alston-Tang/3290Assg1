@@ -28,22 +28,8 @@ function [aR, aG] = alignSURF(B, G, R)
     disp(dvBR);
 	
 	% TODO2: Matching in single-scale
-    aG = zeros(size(G));
-    aR = zeros(size(R));
-    for y = 1 : size(B, 1)
-        for x = 1 : size(B, 2)
-            adjGY = y + dvBG(1);
-            adjGX = x + dvBG(2);
-            adjRY = y + dvBR(1);
-            adjRX = x + dvBR(2);
-            if adjGY > 0 && adjGY <size(G, 1) && adjGX > 0 && adjGX < size(G, 2)
-                aG(adjGY, adjGX) = G(y, x);
-            end
-            if adjRY > 0 && adjRY <size(R, 1) && adjRX > 0 && adjRX < size(R, 2)
-                aR(adjRY, adjRX) = R(y, x);
-            end
-        end
-    end
+    aG = circshift(G, dvBG);
+    aR = circshift(R, dvBR);
 	% Output aimg
 end
 

@@ -3,7 +3,7 @@
 %% CSCI 3290: Assignment 1 Starter Code
 
 % Input glass plate image
-imgname = '00120u.tif';
+imgname = '00120v.jpg';
 try
     fullimg = imread(imgname);
 catch
@@ -46,11 +46,8 @@ tic;   % The Timer starts. To Evalute algorithms' efficiency.
 % Write your codes here. 
 % Write your function of alignSingle and alignMulti
 
-% aG = alignMulti(G,B);
-% aR = alignMulti(R,B);
-[aR, aG] = alignSURF(B, G, R);
-% aG = alignSingle(G,B);
-% aR = alignSingle(R,B);
+aG = alignMulti(G,B);
+aR = alignMulti(R,B);
 
 toc;   % The Timer stops and displays time elapsed.
 %% Output Results
@@ -79,5 +76,5 @@ imshow(contrastImg);
 % imshowpair(contrastImg, colorImg, 'montage');
 
 % Save result image to File
-% imwrite(colorImg,['result-' imgname]);
+imwrite(contrastImg,['result-' imgname]);
 

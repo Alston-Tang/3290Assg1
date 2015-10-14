@@ -3,7 +3,7 @@
 %% CSCI 3290: Assignment 1 Starter Code
 
 % Input glass plate image
-imgname = '00120u.tif';
+imgname = '00133v.jpg';
 try
     fullimg = imread(imgname);
 catch
@@ -58,9 +58,9 @@ toc;   % The Timer stops and displays time elapsed.
 % For your own code, "G","R" shoule be replaced to "aG","aR"
 
 tic;
-[redgeb, redget, redgel, redger] = cropEdge(aR, 0.6);
-[bedgeb, bedget, bedgel, bedger] = cropEdge(B, 0.6);
-[gedgeb, gedget, gedgel, gedger] = cropEdge(aG, 0.6);
+[redgeb, redget, redgel, redger] = cropEdge(aR, 0.8);
+[bedgeb, bedget, bedgel, bedger] = cropEdge(B, 0.8);
+[gedgeb, gedget, gedgel, gedger] = cropEdge(aG, 0.8);
 
 edgeb = min([redgeb, bedgeb, gedgeb]);
 edget = max([redget, bedget, gedget]);
@@ -79,5 +79,5 @@ imshow(contrastImg);
 % imshowpair(contrastImg, colorImg, 'montage');
 
 % Save result image to File
-% imwrite(colorImg,['result-' imgname]);
+imwrite(colorImg,['result-' imgname]);
 

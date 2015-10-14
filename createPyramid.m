@@ -15,7 +15,7 @@ pSize = 1;
 subImg = img;
 while y > MINY && x > MINX
     pSize = pSize + 1;
-    subImg = imresize(subImg, 0.5);
+    subImg = imresize(imgaussfilt(subImg), 0.5, 'nearest');
     pyramid{pSize} = subImg;
     y = size(subImg, 1);
     x = size(subImg, 2);
