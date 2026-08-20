@@ -27,7 +27,10 @@ install_octave() {
         # Recover from any previous partial/broken install.
         sudo dpkg --configure -a || true
         sudo apt-get "${APT_OPTS[@]}" --fix-broken install || true
-        sudo apt-get "${APT_OPTS[@]}" install octave octave-image || true
+        # fonts-freefont-otf provides FreeSans.otf, which Octave's plotting
+        # (imshow/print) needs to render axis text; without it imshow errors
+        # with "ft_text_renderer: invalid bounding box" in offscreen/headless mode.
+        sudo apt-get "${APT_OPTS[@]}" install octave octave-image fonts-freefont-otf || true
         if octave_ready; then
             return 0
         fi
@@ -45,12 +48,18 @@ else
     install_octave
 fi
 
-# Sanity check: confirm Octave can load the image package and the shims resolve.
+# Sanity check: confirm Octave can load the image package, the shims resolve,
+# and headless plotting (imshow) actually renders -- the assignment scripts call
+# imshow before imwrite, so a missing font would break them at runtime.
 QT_QPA_PLATFORM=offscreen octave --no-gui --eval "
     pkg load image;
     addpath(fullfile('$(pwd)', '.cursor', 'octave-compat'));
     assert(exist('imgaussfilt') == 2, 'imgaussfilt shim missing');
     assert(exist('websave') == 2, 'websave shim missing');
     assert(exist('imread') > 0, 'imread unavailable');
+    f = figure('visible', 'off');
+    imshow(rand(16, 16, 3));
+    print(f, fullfile(tempdir(), 'octave_imshow_smoke.png'), '-dpng');
+    close(f);
     disp('Octave environment ready.');
 "
