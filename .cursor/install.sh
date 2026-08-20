@@ -7,30 +7,42 @@
 # (via the compatibility shims in .cursor/octave-compat and the repo .octaverc).
 set -euo pipefail
 
-# Install octave + octave-image, tolerating transient apt mirror hiccups
-# (occasional "400 Bad Request" on a single .deb) by retrying with
-# --fix-missing before giving up.
+# Octave pulls in a large dependency chain (MPI/RDMA/PETSc/...). The apt mirror
+# used in Cloud Agents occasionally returns a transient "400 Bad Request" for a
+# single .deb, which leaves a broken, half-configured install. Make the install
+# resilient by (a) letting apt retry each download several times and (b)
+# repairing any partial state with dpkg --configure / apt --fix-broken before
+# retrying the whole install.
+APT_OPTS=(-y --no-install-recommends -o Acquire::Retries=8)
+
+octave_ready() {
+    command -v octave >/dev/null 2>&1 && octave --version >/dev/null 2>&1
+}
+
 install_octave() {
     local attempt
-    for attempt in 1 2 3 4; do
+    for attempt in 1 2 3 4 5; do
         echo "apt install attempt ${attempt}..."
-        sudo apt-get update -qq || true
-        if sudo apt-get install -y --no-install-recommends --fix-missing \
-            octave octave-image; then
+        sudo apt-get update -qq -o Acquire::Retries=8 || true
+        # Recover from any previous partial/broken install.
+        sudo dpkg --configure -a || true
+        sudo apt-get "${APT_OPTS[@]}" --fix-broken install || true
+        sudo apt-get "${APT_OPTS[@]}" install octave octave-image || true
+        if octave_ready; then
             return 0
         fi
-        echo "apt install attempt ${attempt} failed; retrying..."
-        sleep $((attempt * 4))
+        echo "apt install attempt ${attempt} did not yield a working octave; retrying..."
+        sleep $((attempt * 5))
     done
-    echo "Failed to install octave after multiple attempts." >&2
+    echo "Failed to install a working octave after multiple attempts." >&2
     return 1
 }
 
-if ! command -v octave >/dev/null 2>&1; then
+if octave_ready; then
+    echo "Octave already installed: $(octave --version | head -1)"
+else
     echo "Octave not found; installing octave + octave-image..."
     install_octave
-else
-    echo "Octave already installed: $(octave --version | head -1)"
 fi
 
 # Sanity check: confirm Octave can load the image package and the shims resolve.
