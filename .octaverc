@@ -1,0 +1,16 @@
+% Octave startup configuration for running this MATLAB assignment under GNU Octave.
+%
+% This file is read only by GNU Octave (MATLAB uses startup.m), so it does not
+% affect running the code in MATLAB. It makes the repository runnable under
+% Octave out of the box by:
+%   1. loading the `image` package (imread/imresize/edge/... live there), and
+%   2. adding .cursor/octave-compat to the path, which provides small shims for
+%      MATLAB functions that Octave lacks (imgaussfilt, websave).
+if exist('OCTAVE_VERSION', 'builtin')
+    try
+        pkg load image;
+    catch err
+        warning('Could not load the Octave `image` package: %s', err.message);
+    end
+    addpath(fullfile(fileparts(mfilename('fullpath')), '.cursor', 'octave-compat'));
+end
